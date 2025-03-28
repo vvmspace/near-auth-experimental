@@ -16,6 +16,7 @@ async function init() {
 
   const loginBtn = document.getElementById('login');
   const signBtn = document.getElementById('sign');
+  const logoutBtn = document.getElementById('logout');
 
   if (!wallet.isSignedIn()) {
     loginBtn.onclick = () => wallet.requestSignIn({
@@ -23,10 +24,19 @@ async function init() {
       successUrl: window.location.href,  
       failureUrl: window.location.href,
     });
+    signBtn.disabled = true;
+    if (logoutBtn) logoutBtn.style.display = 'none';
   } else {
     loginBtn.textContent = `Logged in as ${wallet.getAccountId()}`;
     loginBtn.disabled = true;
     signBtn.disabled = false;
+    if (logoutBtn) {
+      logoutBtn.style.display = 'block';
+      logoutBtn.onclick = () => {
+        wallet.signOut();
+        window.location.reload();
+      };
+    }
   }
 
   signBtn.onclick = async () => {
